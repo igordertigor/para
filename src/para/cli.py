@@ -40,17 +40,19 @@ def status():
     for project in projects_path.glob("*"):
         count += 1
         status_file = project / "STATUS.md"
+        if project.name.startswith("."):
+            continue
         if not status_file.exists():
-            console.print(f"{count:2}. [ SKIP ] {project.name}")
+            console.print(f"{count:2}. [ SKIP ] {project.name}", style="dim")
             continue
 
         status_content = status_file.read_text()
         title_match = re.search(r'# Status: (.*)', status_content)
         title = title_match.group(1) if title_match else project.name
-        all_status = re.findall(r"- (\d{4}-\d{2}-\d{2}): (.*)", status_content)
-        date, status_string = sorted(all_status)[-1]
-        console.print(f"{count:2}. {title}", style="bold white on blue")
-        console.print(f"  {date} - {status_string}")
+        all_status = re.findall(r"- (\d{4}-\d{2}-\d{2}):? (.*)", status_content)
+        date, status_string = sorted(all_status, key=lambda item: item[0])[-1]
+        console.rule(f"{count:2}. {title}", style="bold green")
+        console.print(f"  {date} - {status_string}\n")
 
 def slugify(name: str) -> str:
     return name.lower().replace(" ", "-")
