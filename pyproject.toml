@@ -1,0 +1,16 @@
+[project]
+name = "para"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "typer>=0.24.1",
+]
+
+[project.scripts]
+para = "para:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
