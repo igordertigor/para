@@ -16,6 +16,6 @@ This repository contains a few commands to keep the different directories struct
 
 ## Planned features
 
-- List status of all projects
+- Status shows "next" action if available
 - Linking areas and projects
 - Semantic search in archive
