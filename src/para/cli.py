@@ -36,14 +36,18 @@ def status():
     projects_path = Path("~/projects").expanduser()
     console = Console()
 
-    count = 0
+    projects = []
     for project in projects_path.glob("*"):
-        count += 1
         status_file = project / "STATUS.md"
         if project.name.startswith("."):
             continue
         if not status_file.exists():
-            console.print(f"{count:2}. [ SKIP ] {project.name}", style="dim")
+            projects.append(
+                {
+                    "status": "skip",
+                    "title": project.name,
+                }
+            )
             continue
 
         status_content = status_file.read_text()
@@ -51,8 +55,25 @@ def status():
         title = title_match.group(1) if title_match else project.name
         all_status = re.findall(r"- (\d{4}-\d{2}-\d{2}):? (.*)", status_content)
         date, status_string = sorted(all_status, key=lambda item: item[0])[-1]
-        console.rule(f"{count:2}. {title}", style="bold green")
-        console.print(f"  {date} - {status_string}\n")
+        projects.append(
+            {
+                "title": title,
+                "status": "has-status",
+                "last_update": date,
+                "last_status": status_string,
+            }
+        )
+
+    def projects_key(a):
+        return (a["status"], a["title"], a.get("all_status"))
+
+    for i, project in enumerate(sorted(projects, key=projects_key)):
+        title = project["title"]
+        if project["status"] == "skip":
+            console.print(f"{i+1:2}. [ SKIP ] {title}", style="dim")
+        elif project["status"] == "has-status":
+            console.print(f"{i+1:2}. {title}", style="bold green")
+            console.print(f"  {project['last_update']} - {project['last_status']}\n")
 
 def slugify(name: str) -> str:
     return name.lower().replace(" ", "-")
