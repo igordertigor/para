@@ -58,7 +58,7 @@ def status():
         projects.append(
             {
                 "title": title,
-                "status": "has-status",
+                "status": "valid",
                 "last_update": date,
                 "last_status": status_string,
             }
@@ -67,11 +67,11 @@ def status():
     def projects_key(a):
         return (a["status"], a.get("last_update"), a["title"], a.get("all_status"))
 
-    for i, project in enumerate(sorted(projects, key=projects_key)):
+    for i, project in enumerate(sorted(projects, key=projects_key, reverse=True)):
         title = project["title"]
         if project["status"] == "skip":
             console.print(f"{i+1:2}. [ SKIP ] {title}", style="dim")
-        elif project["status"] == "has-status":
+        elif project["status"] == "valid":
             console.print(f"{i+1:2}. {title}", style="bold green")
             console.print(f"  {project['last_update']} - {project['last_status']}\n")
 
