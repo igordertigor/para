@@ -65,7 +65,7 @@ def status():
         )
 
     def projects_key(a):
-        return (a["status"], a["title"], a.get("all_status"))
+        return (a["status"], a.get("last_update"), a["title"], a.get("all_status"))
 
     for i, project in enumerate(sorted(projects, key=projects_key)):
         title = project["title"]
